@@ -11,3 +11,19 @@ keywords:
   - "gaussoids"
   - "conditional independence"
   - "symmetric matrices"
+doi: "10.5281/zenodo.24564886"
+url: "https://doi.org/10.5281/zenodo.24564886"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.24564885"
+    description: "Concept DOI for all versions."
+preferred-citation:
+  type: software
+  title: "Counting realizable gaussoids over infinite fields"
+  authors:
+    - name: "DannyExperiments"
+  version: "1.0.0"
+  date-released: 2026-11-26
+  doi: "10.5281/zenodo.24564886"
+  url: "https://doi.org/10.5281/zenodo.24564886"
+  repository-code: "https://github.com/DannyExperiments/realizable-gaussoids-cubic-growth"
