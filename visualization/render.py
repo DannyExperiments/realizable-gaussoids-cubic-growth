@@ -11,7 +11,7 @@ from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 from PIL import Image, ImageDraw, ImageFont
 
 
-SIZE = (944, 560)
+SIZE = (704, 800)
 BG = "#0b1324"
 PANEL = "#13223a"
 RULE = "#293c58"
@@ -80,12 +80,12 @@ def make_renderer(regular, bold, det_table):
         def project(x, y, z):
             view_x = x * cos(angle) - y * sin(angle)
             depth = x * sin(angle) + y * cos(angle)
-            return (256 + 142 * view_x, 376 + 65 * depth - 48 * z)
+            return (351 + 192 * view_x, 365 + 59 * depth - 45 * z)
 
-        label(39, 35, "Recover a subset from one zero", 36, heavy=True)
-        label(41, 84, "Six labelled variables  /  two selectors, weights 1 and 2", 19, SOFT)
-        draw.line((40, 119, 906, 119), fill=RULE, width=2)
-        label(40, 149, "Each column is one pair across A and B", 18, SOFT)
+        label(34, 28, "Recover a subset from one zero", 33, heavy=True)
+        label(35, 76, "Six variables · two selectors of weights 1 and 2", 23, SOFT)
+        draw.line((35, 112, 669, 112), fill=RULE, width=2)
+        label(35, 131, "One column per pair across A and B", 22, SOFT)
 
         floor = [(x, y, 0) for x, y in [(-.96, -.96), (.96, -.96), (.96, .96), (-.96, .96)]]
         draw.polygon([project(*v) for v in floor], fill=PANEL, outline=RULE, width=2)
@@ -94,8 +94,8 @@ def make_renderer(regular, bold, det_table):
         for y in (-.58, .58):
             draw.line([project(x, y, 0) for x in (-.96, .96)], fill=RULE, width=2)
         for index, v in enumerate((-.58, .58)):
-            label(*project(v, 1.13, 0), ("a₁", "a₂")[index], 18, CYAN, True, "mm")
-            label(*project(1.16, v, 0), ("b₁", "b₂")[index], 18, ORANGE, True, "mm")
+            label(*project(v, 1.13, 0), ("a₁", "a₂")[index], 24, CYAN, True, "mm")
+            label(*project(1.16, v, 0), ("b₁", "b₂")[index], 24, ORANGE, True, "mm")
 
         positions = tuple(product((-.58, .58), repeat=2))
         order = sorted(range(4), key=lambda idx: positions[idx][0] * sin(angle) + positions[idx][1] * cos(angle))
@@ -109,9 +109,9 @@ def make_renderer(regular, bold, det_table):
                 X, Y = project(x, y, value)
                 radius = 4
                 if CHOICES[index] == value:
-                    radius = 10
+                    radius = 12
                     draw.ellipse((X-radius, Y-radius, X+radius, Y+radius), fill=color, outline=BG, width=2)
-                    label(X + 14, Y, str(value), 19, color, True, "lm")
+                    label(X + 17, Y, str(value), 26, color, True, "lm")
                 else:
                     draw.ellipse((X-radius, Y-radius, X+radius, Y+radius), fill=BG, outline=color, width=2)
                 if index == selected and value == test:
@@ -120,27 +120,28 @@ def make_renderer(regular, bold, det_table):
                         (X-ring, Y-ring, X+ring, Y+ring), outline=GREEN if value == CHOICES[index] else ORANGE, width=3,
                     )
 
-        draw.rounded_rectangle((491, 144, 905, 448), radius=17, fill=PANEL)
-        label(512, 167, f"Inspect pair ({PAIR_NAMES[selected]})", 23, heavy=True)
-        label(512, 203, f"Stored subset R = {SUBSETS[CHOICES[selected]]}", 20, CYAN, True)
-        label(512, 245, "Test subset S", 16, SOFT, True)
-        label(879, 245, "256 × determinant", 16, SOFT, True, "rt")
+        draw.rounded_rectangle((34, 454, 670, 710), radius=17, fill=PANEL)
+        label(52, 470, f"Pair ({PAIR_NAMES[selected]})", 28, heavy=True)
+        label(654, 472, f"Stored R = {SUBSETS[CHOICES[selected]]}", 25, CYAN, True, "rt")
+        label(52, 515, "Test subset S", 21, SOFT, True)
+        label(298, 515, "Sum", 21, SOFT, True, "mt")
+        label(654, 515, "256 × determinant", 21, SOFT, True, "rt")
         for index, subset in enumerate(SUBSETS):
-            y = 276 + 37 * index
+            y = 547 + 34 * index
             value = det_table[selected][index]
             color = TEXT
             if test == index:
                 color = GREEN if value == 0 else ORANGE
-                draw.rounded_rectangle((505, y-6, 891, y+23), radius=7, fill=RULE)
-            label(518, y, f"{subset}    sum {index}", 18, color, test == index)
+                draw.rounded_rectangle((44, y-4, 660, y+26), radius=7, fill=RULE)
+            label(52, y, subset, 24, color, test == index)
+            label(298, y, str(index), 24, color, test == index, "mt")
             number = str(value).replace("-", "−")
-            label(879, y, number if value else "0  ←  match", 18, GREEN if value == 0 else color, True, "rt")
+            label(654, y, number if value else "0  ←  match", 25, GREEN if value == 0 else color, True, "rt")
 
-        label(512, 421, "Height = stored sum   ·   t = 1/16", 15, SOFT)
-        draw.line((40, 478, 905, 478), fill=RULE, width=2)
-        label(41, 495, "4 pairs × 2 bits = 8 independent bits", 19, heavy=True)
-        label(904, 495, "2⁸ = 256 constructed patterns", 19, CYAN, True, "rt")
-        label(41, 527, "In general, |A| × |B| × |K| bits give cubic growth for balanced blocks.", 17, SOFT)
+        label(52, 686, "Height = stored sum   ·   t = 1/16", 19, SOFT)
+        draw.line((35, 725, 669, 725), fill=RULE, width=2)
+        label(35, 740, "4 pairs × 2 bits = 8 bits → 256 patterns", 26, CYAN, True)
+        label(35, 775, "|A| × |B| × |K| bits is cubic for balanced blocks.", 21, SOFT)
         return image
 
     return frame
