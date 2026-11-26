@@ -1,0 +1,1 @@
+256 distinct restricted CI patterns; all 16,384 principal determinants positive.

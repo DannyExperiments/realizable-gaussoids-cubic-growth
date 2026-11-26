@@ -1,0 +1,51 @@
+\documentclass[11pt,a4paper]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amssymb}
+\usepackage[hidelinks]{hyperref}
+\newtheorem{theorem}{Theorem}
+\DeclareMathSizes{8}{8}{8}{8}
+\DeclareMathSizes{9}{9}{8}{8}
+\DeclareMathSizes{10.95}{10.95}{8}{8}
+\title{Counting realizable gaussoids over infinite fields}
+\date{}
+\begin{document}
+\begin{abstract}
+For each infinite field, the logarithm of the number of principally regular, symmetrically realizable gaussoids on $n$ labelled variables grows as $\Theta(n^3)$. The same estimate holds for positive realizations over each ordered field. The lower bound encodes subsets of a conditioning set independently for each of a quadratic number of variable pairs. It answers Boege's Conjecture~7.3 and matches the order of his upper bound.
+\end{abstract}
+\maketitle
+\section{The counting problem}
+Fix a field $F$. A symmetric $n$-by-$n$ matrix $M$ is principally regular if all its principal minors are nonzero. Its conditional-independence pattern records all symbols $(ij\mid S)$ for which $\det M_{iS,jS}=0$, where $i,j$ are distinct, $S\subseteq[n]\setminus\{i,j\}$, and $S$ is ordered the same way in the rows and columns. Write $g_F(n)$ for the number of distinct such patterns of principally regular matrices, with fixed labels. For ordered $F$, write $g_F^+(n)$ when all principal minors must be positive. These are the realizable gaussoids of Boege~\cite{boege}. Graphic examples give a quadratic lower bound on the logarithm; Proposition~4.46 of the thesis gives a cubic upper bound. Conjecture~7.3 asks for a superquadratic lower bound. Boege already used a diagonal conditioning block and a Schur complement for two endpoints in Section~4.2 of his thesis. Here one array encodes independent choices of conditioning sets simultaneously for all pairs in $A\times B$.
+
+\begin{theorem}
+Let $a=\lfloor n/3\rfloor$ and $h=a^2(n-2a)$. For each infinite $F$, $g_F(n)\ge 2^h$; for each ordered $F$, $g_F^+(n)\ge 2^h$. There are at least $2^h$ fixed patterns each realizable by rational positive definite matrices arbitrarily near the real identity matrix.
+\end{theorem}
+\begin{proof}
+Partition the labels into $A,B,K$ of sizes $a,a,n-2a$. Choose weights $u_k$ whose subset sums $u(S)=\sum_{k\in S}u_k$ are all distinct. In characteristic zero take successive powers of two. In positive characteristic $p$, an infinite field has infinite dimension over $\mathbb F_p$; choose linearly independent weights. For distinct subsets their difference has a nonzero coefficient even in characteristic two.
+
+For each $(i,j)\in A\times B$ choose an arbitrary subset $R_{ij}\subseteq K$. Start with the identity matrix. Set the following entries and their transposes, leaving all other off-diagonal entries zero:
+\[
+ M_{ik}=t u_k,\qquad M_{jk}=t,\qquad M_{ij}=t^2u(R_{ij})
+ \quad (i\in A,\ j\in B,\ k\in K).
+\]
+For $S\subseteq K$ the conditioning block is an identity matrix. Subtract from row $i$ the combination of its $S$-rows with coefficients $(tu_k)_{k\in S}$. This gives
+\[
+ \det M_{iS,jS}=t^2\bigl(u(R_{ij})-u(S)\bigr).
+\]
+For nonzero $t$ the unique vanishing symbol among these $S$ recovers $R_{ij}$. Other vanishing symbols cannot erase this information.
+
+Each principal determinant is a polynomial in $t$ with constant term one. There are finitely many forbidden roots, so for each array some nonzero $t\in F$ gives a principally regular matrix. In an ordered field let $B_0$ be the sum of the absolute values of all nonconstant coefficients of these polynomials. For $0<t<1/(2+2B_0)$ each determinant differs from one by less than $1/2$. Thus positivity needs no completeness assumption. The $2^{a^2|K|}$ arrays yield distinct patterns in both settings.
+
+For the rational assertion choose the powers-of-two weights in $\mathbb Q$. The finitely many almost-principal minors that are nonzero polynomials have finitely many real roots altogether. For all sufficiently small positive rational $t$ the same full pattern is realized for that array, all principal minors are positive, and $M(t)\to I$. Distinct arrays still have distinct patterns.
+\end{proof}
+
+\section{Order of growth}
+For completeness, the polynomial zero-pattern argument of R\'onyai, Babai and Ganapathy~\cite{rbg} also recovers the order of the known upper bound. For $n\ge2$, the $m=\binom n2 2^{n-2}$ almost-principal determinants have degree at most $n-1$ in $d=n(n+1)/2$ variables. List the distinct attainable sets of nonvanishing determinants $Z_1,\ldots,Z_s$ in nondecreasing order of size. For each $Z_j$ take the product of its determinants. At a witness for $Z_i$ this product vanishes for $j>i$ and is nonzero for $j=i$. The products are linearly independent by triangular evaluation, also over finite fields. With $D=(n-1)m$ their number is at most $\binom{d+D}{d}$. Its logarithm is at most $d\log_2(d+D)=O(n^3)$.
+
+Since $h=n^3/27+O(n^2)$, both logarithmic counts have cubic order. There are at most $2^{\binom n2}$ graphic patterns, so their fraction tends to zero in either setting. The rational construction gives no estimate on the fraction of all realizable patterns admitting realizations arbitrarily near the identity, the separate Question~7.5 of the thesis.
+
+\section*{Evidence and disclosure}
+The proof is independent of the finite replay. At six variables the accompanying rational calculation distinguishes 256 arrays and checks positivity of every principal minor in each example. Gia generated the discovery proof, Claude assisted with the earlier manuscript and reviews, and OpenAI Codex assisted with the present audit and preparation under human direction. Internally reviewed, not peer reviewed.
+\bibliographystyle{amsplain}
+\bibliography{references}
+\end{document}

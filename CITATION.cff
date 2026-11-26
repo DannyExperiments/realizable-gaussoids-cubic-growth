@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "Cite this candidate using its commit identifier."
+title: "Counting realizable gaussoids over infinite fields"
+authors:
+  - name: "DannyExperiments"
+type: software
+repository-code: "https://github.com/DannyExperiments/realizable-gaussoids-cubic-growth"
+keywords:
+  - "gaussoids"
+  - "conditional independence"
+  - "symmetric matrices"
