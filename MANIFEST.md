@@ -31,3 +31,8 @@ These files form the release inventory. `SHA256SUMS.txt` records their digests a
 - `scripts/verify_repository.py`
 - `verification/logs/replay.txt`
 - `verification/src/replay.py`
+- `visualization/README.md`
+- `visualization/index.html`
+- `visualization/render.py`
+- `visualization/subset-encoding-explorer.zip`
+- `visualization/subset-encoding.gif`

@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recover a subset from one zero</title>
+<style>
+  :root { color-scheme:dark; background:#0b1324; color:#f5f8ff; font:17px/1.5 system-ui,sans-serif }
+  * { box-sizing:border-box }
+  body { max-width:1120px; margin:auto; padding:24px 22px 44px }
+  h1 { font-size:clamp(30px,6vw,48px); line-height:1.08; margin:0 0 14px; letter-spacing:-.045em }
+  h2 { font-size:1.23rem; margin:0 0 10px }
+  p { margin:0 0 15px }
+  .intro,.note { color:#c2d0e5 }
+  .layout { display:grid; grid-template-columns:minmax(0,1.17fr) minmax(290px,1fr); gap:16px; margin:22px 0 }
+  .card { background:#13223a; border:1px solid #293c58; border-radius:16px; padding:17px }
+  canvas { width:100%; height:auto; display:block; touch-action:pan-y; cursor:grab }
+  canvas:active { cursor:grabbing }
+  label, output { display:block }
+  #angle { width:100%; accent-color:#67def5 }
+  label, .note { font-size:.94rem }
+  select { width:100%; padding:7px 9px; margin:4px 0 13px; border:1px solid #486487; border-radius:7px; background:#172b46; font:inherit }
+  table { width:100%; border-collapse:collapse; margin:4px 0 12px }
+  th,td { padding:5px 8px; text-align:left; border-bottom:1px solid #293c58 }
+  th { color:#c2d0e5; font-size:.82rem }
+  th:last-child, td:last-child { text-align:right }
+  td { font-variant-numeric:tabular-nums }
+  .tested { background:#293c58 }
+  .zero td:last-child, #result.good { color:#8de4a5; font-weight:700 }
+  #result { color:#ffd185; min-height:1.6em }
+  strong { color:#67def5 }
+  @media (max-width:780px) { .layout { grid-template-columns:1fr } }
+</style>
+<main>
+  <h1>Recover a subset from one zero</h1>
+  <p class="intro">There are two labels in each of A, B and K. The two selectors k₁ and k₂ have weights 1 and 2, so their subsets have distinct sums 0, 1, 2 and 3.</p>
+  <div class="layout">
+    <section class="card">
+      <h2>One column per pair in A × B</h2>
+      <canvas width="540" height="358" id="plot" aria-label="Rotatable plot of the four independent pair choices"></canvas>
+      <label for="angle">Rotate the plot</label>
+      <input id="angle" type="range" min="0" max="360" value="34">
+      <p class="note">The solid dot shows the stored sum. The ring shows the conditioning set being tested.</p>
+    </section>
+    <section class="card">
+      <label for="pair">Inspect a pair</label><select id="pair"></select>
+      <label for="stored">Store a subset R for this pair</label><select id="stored"></select>
+      <label for="tested">Test a conditioning set S</label><select id="tested"></select>
+      <table>
+        <thead><tr><th>Conditioning set S</th><th>Sum</th><th>256 × determinant</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <output id="result" aria-live="polite"></output>
+    </section>
+  </div>
+  <p>With t = 1/16 and the K block equal to the identity, the almost-principal determinant for (aᵢ, bⱼ | S) equals t² × (stored sum − tested sum). The table evaluates the minors of the rational matrix exactly.</p>
+  <p>Each of the four pairs stores two bits independently. There are <strong>2⁸ = 256 patterns</strong> in this six-variable construction. In general there are |A| × |B| pairs and |K| bits per pair, giving <strong>|A| × |B| × |K| bits</strong>, cubic when the three blocks have comparable sizes.</p>
+</main>
+<script>
+const subsets = ["∅", "{k₁}", "{k₂}", "{k₁, k₂}"];
+const pairs = ["a₁, b₁", "a₁, b₂", "a₂, b₁", "a₂, b₂"];
+const positions = [[-.61,-.61],[-.61,.61],[.61,-.61],[.61,.61]];
+const choices = [1, 2, 0, 3];
+const colors = { cyan:"#67def5", soft:"#a7bdd9", line:"#39516f", green:"#8de4a5", amber:"#ffd185", dark:"#0b1324" };
+const pair = document.getElementById("pair");
+const stored = document.getElementById("stored");
+const tested = document.getElementById("tested");
+const angle = document.getElementById("angle");
+const plot = document.getElementById("plot");
+const context = plot.getContext("2d");
+const rows = document.getElementById("rows");
+const result = document.getElementById("result");
+
+function addOptions(select, values) {
+  values.forEach((name, index) => select.add(new Option(name, index)));
+}
+addOptions(pair, pairs);
+for (const menu of [stored, tested]) addOptions(menu, subsets);
+stored.value = choices[0];
+tested.value = 1;
+
+function det(matrix) {
+  if (matrix.length === 1) return matrix[0][0];
+  return matrix[0].reduce((sum, entry, column) => {
+    const reduced = matrix.slice(1).map(row => row.filter((_, index) => index !== column));
+    return sum + (column % 2 ? -entry : entry) * det(reduced);
+  }, 0n);
+}
+
+function makeMatrix() {
+  // Every entry here is 256 times the covariance entry.
+  const matrix = Array.from({length:6}, (_, i) => Array.from({length:6}, (_, j) => i === j ? 256n : 0n));
+  for (let i=0; i<4; i++) {
+    matrix[i][4] = matrix[4][i] = 16n;
+    matrix[i][5] = matrix[5][i] = i < 2 ? 32n : 16n;
+  }
+  choices.forEach((choice, idx) => {
+    const i = Math.floor(idx / 2), j = 2 + idx % 2;
+    matrix[i][j] = matrix[j][i] = BigInt(choice);
+  });
+  return matrix;
+}
+
+function scaledMinor(matrix, pairIndex, mask) {
+  const i = Math.floor(pairIndex / 2), j = 2 + pairIndex % 2;
+  const s = [4, 5].filter((_, index) => mask & (1 << index));
+  const submatrix = [i, ...s].map(r => [j, ...s].map(c => matrix[r][c]));
+  const value = det(submatrix);
+  const factor = 256n ** BigInt(s.length);
+  if (value % factor !== 0n) throw new Error("Unexpected non-integral scaled determinant");
+  return Number(value / factor);
+}
+
+function drawPlot(pairIndex, mask) {
+  const radians = Number(angle.value) * Math.PI / 180;
+  const c = Math.cos(radians), s = Math.sin(radians);
+  const depth = ([x,y]) => x*s+y*c;
+  const project = (x,y,z=0) => [270+172*(x*c-y*s), 243+68*depth([x,y])-49*z];
+  function line(points, color, width=2, fill=null) {
+    context.beginPath();
+    points.forEach(([x,y], i) => i ? context.lineTo(x,y) : context.moveTo(x,y));
+    if (fill) { context.closePath(); context.fillStyle = fill; context.fill(); }
+    context.strokeStyle = color; context.lineWidth = width; context.stroke();
+  }
+  function circle(x,y,r,stroke,fill) {
+    context.beginPath(); context.arc(x,y,r,0,2*Math.PI);
+    if (fill) { context.fillStyle = fill; context.fill(); }
+    context.lineWidth = 2.5; context.strokeStyle = stroke; context.stroke();
+  }
+  function label(x,y,name,color) {
+    context.font = "bold 18px system-ui";
+    context.textAlign="center"; context.textBaseline="middle";
+    context.fillStyle = color; context.fillText(name,x,y);
+  }
+  context.clearRect(0,0,plot.width,plot.height);
+  const side = .93;
+  line([[-side,-side],[side,-side],[side,side],[-side,side]].map(p => project(...p)), colors.line, 2, "#172b46");
+  for (const v of [-.61,.61]) {
+    line([project(v,-side),project(v,side)], colors.line);
+    line([project(-side,v),project(side,v)], colors.line);
+  }
+  for (const [i,v] of [-.61,.61].entries()) {
+    label(...project(v,1.15), ["a₁","a₂"][i], colors.cyan);
+    label(...project(1.14,v), ["b₁","b₂"][i], colors.amber);
+  }
+  const order = [0,1,2,3].filter(i => i !== pairIndex).sort((i,j) => depth(positions[i])-depth(positions[j]));
+  order.push(pairIndex);
+  for (const i of order) {
+    const [x,y] = positions[i];
+    const color = i === pairIndex ? colors.cyan : colors.soft;
+    line([project(x,y,0),project(x,y,3)],color,i === pairIndex ? 3 : 2);
+    for (let k=0; k<4; k++) {
+      const [u,v] = project(x,y,k);
+      const solid = choices[i] === k;
+      circle(u,v,solid ? 9 : 3.5,color,solid ? color : colors.dark);
+      if (solid) label(u+19,v,String(k),color);
+      if (i === pairIndex && k === mask) circle(u,v,solid ? 15 : 10,solid ? colors.green : colors.amber,null);
+    }
+  }
+}
+
+function update() {
+  const i = Number(pair.value), mask = Number(tested.value);
+  const matrix = makeMatrix();
+  const values = subsets.map((_, j) => scaledMinor(matrix, i, j));
+  const chosen = values[mask];
+  result.textContent = chosen === 0 ? "Zero. The tested subset is the stored subset." : "Nonzero. Try another conditioning set.";
+  result.classList.toggle("good", chosen === 0);
+  rows.replaceChildren(...values.map((value, j) => {
+    const tr = document.createElement("tr");
+    if (j === mask) tr.classList.add("tested");
+    if (value === 0) tr.classList.add("zero");
+    for (const text of [subsets[j], j, value === 0 ? "0 · match" : value]) {
+      tr.insertCell().textContent = text;
+    }
+    return tr;
+  }));
+  drawPlot(i,mask);
+}
+pair.addEventListener("change", () => { stored.value = choices[Number(pair.value)]; update(); });
+stored.addEventListener("change", () => { choices[Number(pair.value)] = Number(stored.value); update(); });
+tested.addEventListener("change", update);
+angle.addEventListener("input", () => drawPlot(Number(pair.value),Number(tested.value)));
+let pointer = null;
+plot.addEventListener("pointerdown", event => {
+  if (pointer !== null) return;
+  pointer = {id:event.pointerId, x:event.clientX, angle:Number(angle.value)};
+  plot.setPointerCapture(event.pointerId);
+});
+plot.addEventListener("pointermove", event => {
+  if (pointer?.id !== event.pointerId) return;
+  angle.value = ((pointer.angle + Math.round((event.clientX-pointer.x)*.72)) % 360 + 360) % 360;
+  drawPlot(Number(pair.value),Number(tested.value));
+});
+for (const event of ["pointerup","pointercancel","lostpointercapture"]) {
+  plot.addEventListener(event, current => { if (pointer?.id === current.pointerId) pointer = null; });
+}
+update();
+</script>
