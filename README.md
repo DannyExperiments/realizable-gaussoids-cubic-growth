@@ -1,7 +1,7 @@
 # Counting realizable gaussoids over infinite fields
 
 [![Repository verification](https://github.com/DannyExperiments/realizable-gaussoids-cubic-growth/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/DannyExperiments/realizable-gaussoids-cubic-growth/actions/workflows/verify.yml) [![Verifier replay](https://github.com/DannyExperiments/realizable-gaussoids-cubic-growth/actions/workflows/replay.yml/badge.svg?branch=main)](https://github.com/DannyExperiments/realizable-gaussoids-cubic-growth/actions/workflows/replay.yml) [![PDF build](https://github.com/DannyExperiments/realizable-gaussoids-cubic-growth/actions/workflows/pdf.yml/badge.svg?branch=main)](https://github.com/DannyExperiments/realizable-gaussoids-cubic-growth/actions/workflows/pdf.yml)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24564886.svg)](https://doi.org/10.5281/zenodo.24564886)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24565878.svg)](https://doi.org/10.5281/zenodo.24565878)
 
 How fast does the number of realizable gaussoids grow with the number of labelled variables? The original question appears in [Boege, dissertation, Conjecture 7.3](https://tboege.de/research/dissert.pdf#page=140).
 

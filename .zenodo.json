@@ -1,13 +1,13 @@
 {
   "title": "Counting realizable gaussoids over infinite fields",
   "upload_type": "software",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "creators": [
     {
       "name": "DannyExperiments"
     }
   ],
-  "description": "<p>For each infinite field the logarithm of the number of principally regular symmetric-matrix conditional-independence patterns is Θ(n³). The same estimate holds over each ordered field with all principal minors positive.</p><p>No earlier superquadratic lower bound for these same patterns surfaced. The qualifying contribution is the cubic lower bound over each infinite field, including positive realizations over each ordered field. Confidence in the priority search is moderate.</p><p>Includes the paper, its LaTeX source and bibliography, the proof outline, review summaries, verification code and replay logs. Internally reviewed, not peer reviewed.</p><p>Under human direction, Gia (OpenAI Dot) generated the discovery proof and its research packet. Claude (Anthropic) assisted with earlier audits and manuscript preparation. OpenAI Codex performed the director’s mathematical review and revised the paper. GPT-6.2 Sol assisted with literature searches and release preparation. DannyExperiments maintains the repository and is the preferred citation identity. No AI system is proposed as an author.</p>",
+  "description": "<p>For each infinite field the logarithm of the number of principally regular symmetric-matrix conditional-independence patterns is Θ(n³). The same estimate holds over each ordered field with all principal minors positive.</p><p>No earlier superquadratic lower bound for these same patterns surfaced. The qualifying contribution is the cubic lower bound over each infinite field, including positive realizations over each ordered field. Confidence in the priority search is moderate.</p><p>Includes the paper, its LaTeX source and bibliography, the proof outline, review summaries, verification code and replay logs. Internally reviewed, not peer reviewed.</p><p>Under human direction, ChatGPT Astra 6.2 (OpenAI) generated the discovery proof and its research packet. Claude Opus 5.5 (Anthropic) assisted with earlier audits and manuscript preparation. OpenAI Codex performed the mathematical review and revised the paper. GPT-6.2 Sol assisted with literature searches and release preparation. DannyExperiments maintains the repository and is the preferred citation identity. No AI system is proposed as an author.</p>",
   "keywords": [
     "gaussoids",
     "conditional independence",
@@ -17,7 +17,7 @@
   "notes": "All rights reserved. No repository-wide reuse license is granted.",
   "related_identifiers": [
     {
-      "identifier": "https://github.com/DannyExperiments/realizable-gaussoids-cubic-growth/releases/tag/v1.0.0",
+      "identifier": "https://github.com/DannyExperiments/realizable-gaussoids-cubic-growth/releases/tag/v1.0.1",
       "relation": "isSupplementTo",
       "resource_type": "software"
     }
